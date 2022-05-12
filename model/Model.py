@@ -54,14 +54,18 @@ class Generator(nn.Module):
 class Discriminator(nn.Module):
     def __init__(self, d_model) -> None:
         super(Discriminator, self).__init__()
-        self.encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=1)
-        self.Encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=2)
-        self.lin = nn.Linear(d_model, 1)
+        #self.encoder_layer = nn.TransformerEncoderLayer(d_model=d_model, nhead=1)
+        #self.Encoder = nn.TransformerEncoder(self.encoder_layer, num_layers=2)
+        self.lin1 = nn.Linear(d_model, 16)
+        self.lin2 = nn.Linear(16, 1)
+        self.relu = nn.LeakyReLU(0.2)
         self.sigm = nn.Sigmoid()
     def forward(self, vector): #vector: [128, 64+64]
-        vector = torch.unsqueeze(vector, 0)
-        output = self.Encoder(vector)
-        output = torch.squeeze(output, 0)
-        output = self.lin(output)
+        #vector = torch.unsqueeze(vector, 0)
+        #output = self.Encoder(vector)
+        #output = torch.squeeze(output, 0)
+        output = self.lin1(vector)
+        output = self.relu(output)
+        output = self.lin2(output)
         score = self.sigm(output)
         return score        
